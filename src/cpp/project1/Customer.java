@@ -1,0 +1,886 @@
+ /*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package cpp.project1;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
+import javax.swing.Timer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableRowSorter;
+import net.proteanit.sql.DbUtils;
+
+/**
+ *
+ * @author Priyansh
+ */
+public class Customer extends javax.swing.JFrame {
+
+    /**
+     * Creates new form Billing_pointt
+     */
+    String ItemCat,ItemDesc,codefordelete,Recommendation,quantityfordelete;
+    Connection Con= null;
+    Statement St= null;
+    ResultSet Rs=null;
+    
+    public void getRec(){
+        try{
+            Con=DriverManager.getConnection("jdbc:derby://localhost:1527/grocerystoredb","User1","1234");
+            St=Con.createStatement();
+            String query="Select * from User1.MANAGEITEMTTB where ITEM_CODE='"+ItemCode.getText()+"'";
+            Rs=St.executeQuery(query);
+            while(Rs.next()){
+                Recommendation=Rs.getString("RECOMMENDATION");
+            }
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    public void SelectedItem(){
+        try{
+            Con=DriverManager.getConnection("jdbc:derby://localhost:1527/grocerystoredb","User1","1234");
+            St=Con.createStatement();
+            Rs=St.executeQuery("Select * from User1.CUSTOMER");
+            SelectedItems.setModel(DbUtils.resultSetToTableModel(Rs));
+            theader();
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    public void SelectItem(){
+        try{
+            Con=DriverManager.getConnection("jdbc:derby://localhost:1527/grocerystoredb","User1","1234");
+            St=Con.createStatement();
+            Rs=St.executeQuery("Select ITEM_CODE,ITEM_NAME,ITEM_CATEGORY,SELLING_PRICE,QUANTITY,DESCRIPTION from User1.MANAGEITEMTTB");
+            ItemTable.setModel(DbUtils.resultSetToTableModel(Rs));
+            theader();
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    public void Update(){
+        try {
+            Con = DriverManager.getConnection("jdbc:derby://localhost:1527/grocerystoredb","User1","1234");
+            String Query = "Update User1.MANAGEITEMTTB set QUANTITY=(QUANTITY-"+ItemQuantity.getValue().toString()+")"+"where ITEM_CODE='"+ItemCode.getText()+"'";
+            Statement Add=Con.createStatement();
+            Add.executeUpdate(Query);
+            SelectItem();
+            DefaultTableModel Model=(DefaultTableModel) ItemTable.getModel();
+            int Myindex = ItemTable.getSelectedRow();
+            String left=Integer.toString(Integer.valueOf(AvailableQuantity.getText())-Integer.valueOf(ItemQuantity.getValue().toString()));
+            AvailableQuantity.setText(left);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    
+    }
+    
+    public void GetCat(){
+        try{
+            Con=DriverManager.getConnection("jdbc:derby://localhost:1527/grocerystoredb","User1","1234");
+            St=Con.createStatement();
+            String query="Select * from User1.MANAGECATEGORYTB";
+            Rs=St.executeQuery(query);
+            while(Rs.next()){
+                String MyCat=Rs.getString("CATEGORY_NAME");
+                ItemCategory.addItem(MyCat);
+            }
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    public void FilterItems(){
+        if(ItemCategory.getSelectedItem()=="All")
+        {
+            SelectItem();
+        }
+        else
+        {
+            try{
+                Con=DriverManager.getConnection("jdbc:derby://localhost:1527/grocerystoredb","User1","1234");
+                St=Con.createStatement();
+                Rs=St.executeQuery("Select ITEM_CODE,ITEM_NAME,ITEM_CATEGORY,SELLING_PRICE,QUANTITY,DESCRIPTION  from User1.MANAGEITEMTTB where ITEM_CATEGORY='"+ItemCategory.getSelectedItem()+"'");
+                ItemTable.setModel(DbUtils.resultSetToTableModel(Rs));
+                
+            }catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public Customer() {
+        initComponents();
+        SelectItem();
+        SelectedItem();
+        GetCat();
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        back = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        ItemCategory = new javax.swing.JComboBox<>();
+        ItemSearch = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        ItemName = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        ItemCode = new javax.swing.JTextField();
+        ItemPrice = new javax.swing.JTextField();
+        AvailableQuantity = new javax.swing.JTextField();
+        ItemQuantity = new javax.swing.JSpinner();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        ItemTable = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        Add = new javax.swing.JButton();
+        Clear = new javax.swing.JButton();
+        jPanel8 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        SelectedItems = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
+        Delete = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanel2.setBackground(new java.awt.Color(0, 0, 102));
+        jPanel2.setForeground(new java.awt.Color(255, 255, 255));
+
+        jLabel5.setFont(new java.awt.Font("Copperplate Gothic Bold", 1, 36)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("CUSTOMER");
+
+        back.setBackground(new java.awt.Color(204, 204, 204));
+        back.setIcon(new javax.swing.ImageIcon(getClass().getResource("/cpp/project1/icons/icons8_back_arrow_52px_3.png"))); // NOI18N
+        back.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        back.setOpaque(false);
+        back.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                backMouseClicked(evt);
+            }
+        });
+        back.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(back, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(569, 569, 569)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(back, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(4, 4, 4)))
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
+
+        ItemCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All" }));
+        ItemCategory.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                ItemCategoryItemStateChanged(evt);
+            }
+        });
+        ItemCategory.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                ItemCategoryFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                ItemCategoryFocusLost(evt);
+            }
+        });
+        ItemCategory.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ItemCategoryMouseClicked(evt);
+            }
+        });
+        ItemCategory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ItemCategoryActionPerformed(evt);
+            }
+        });
+
+        ItemSearch.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        ItemSearch.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 3, 0, new java.awt.Color(0, 0, 102)));
+        ItemSearch.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                ItemSearchFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                ItemSearchFocusLost(evt);
+            }
+        });
+        ItemSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ItemSearchActionPerformed(evt);
+            }
+        });
+        ItemSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                ItemSearchKeyReleased(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel7.setText("Select Category");
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel8.setText("Search Item ");
+
+        jPanel5.setBorder(javax.swing.BorderFactory.createMatteBorder(3, 0, 3, 0, new java.awt.Color(0, 0, 102)));
+
+        ItemName.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        ItemName.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 3, 0, new java.awt.Color(0, 0, 102)));
+        ItemName.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                ItemNameFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                ItemNameFocusLost(evt);
+            }
+        });
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel9.setText("Item Name");
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel10.setText(" Quantity");
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel11.setText("Item Code");
+
+        ItemCode.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        ItemCode.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 3, 0, new java.awt.Color(0, 0, 102)));
+        ItemCode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ItemCodeActionPerformed(evt);
+            }
+        });
+        ItemCode.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                ItemCodeKeyReleased(evt);
+            }
+        });
+
+        ItemPrice.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        ItemPrice.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 3, 0, new java.awt.Color(0, 0, 102)));
+
+        AvailableQuantity.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        AvailableQuantity.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 3, 0, new java.awt.Color(0, 0, 102)));
+
+        jLabel12.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel12.setText("Selling Price");
+
+        jLabel13.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel13.setText("Available Quantity");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addGap(23, 23, 23))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(ItemCode, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel13)
+                    .addComponent(jLabel9))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(AvailableQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel10)
+                .addGap(18, 18, 18)
+                .addComponent(ItemQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11)
+                            .addComponent(ItemCode, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9)
+                            .addComponent(ItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ItemPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel13)
+                            .addComponent(AvailableQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel12)))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(57, 57, 57)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel10)
+                            .addComponent(ItemQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(29, Short.MAX_VALUE))
+        );
+
+        jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 102), 2));
+
+        ItemTable.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        ItemTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "Code", "Name", "Category", "Selling Price", "Quantity", "Description"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                true, true, true, false, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        ItemTable.setRowHeight(30);
+        ItemTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ItemTableMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(ItemTable);
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel8)
+                                .addGap(18, 18, 18)
+                                .addComponent(ItemSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel7)
+                                .addGap(18, 18, 18)
+                                .addComponent(ItemCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(12, 12, 12))))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ItemCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(ItemSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8))
+                .addGap(16, 16, 16)
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(30, 30, 30)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        jLabel2.setText("  Product details:-");
+        jLabel2.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 3, 0, new java.awt.Color(0, 0, 102)));
+
+        Add.setBackground(new java.awt.Color(0, 0, 102));
+        Add.setFont(new java.awt.Font("Copperplate Gothic Bold", 1, 18)); // NOI18N
+        Add.setForeground(new java.awt.Color(255, 255, 255));
+        Add.setText("add ");
+        Add.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddActionPerformed(evt);
+            }
+        });
+
+        Clear.setBackground(new java.awt.Color(0, 0, 102));
+        Clear.setFont(new java.awt.Font("Copperplate Gothic Bold", 1, 18)); // NOI18N
+        Clear.setForeground(new java.awt.Color(255, 255, 255));
+        Clear.setText("clear");
+        Clear.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Clear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ClearActionPerformed(evt);
+            }
+        });
+
+        jPanel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 102), 2));
+
+        SelectedItems.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        SelectedItems.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "Code", "Name", "Category", "Selling Price", "Quantity", "Description"
+            }
+        ));
+        SelectedItems.setRowHeight(30);
+        SelectedItems.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                SelectedItemsMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(SelectedItems);
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 920, Short.MAX_VALUE)
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 802, Short.MAX_VALUE)
+        );
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        jLabel3.setText("  Items Selected:-");
+        jLabel3.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 3, 0, new java.awt.Color(0, 0, 102)));
+
+        Delete.setBackground(new java.awt.Color(0, 0, 102));
+        Delete.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        Delete.setForeground(new java.awt.Color(255, 255, 255));
+        Delete.setText("DELETE");
+        Delete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeleteActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(Add, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(47, 47, 47)
+                        .addComponent(Clear, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 942, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 930, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 924, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(Delete, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(Clear, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Add, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Delete, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+  private void theader()
+        {
+            JTableHeader thead =ItemTable.getTableHeader();
+            thead.setForeground(new Color(0,0,102));
+            thead.setFont(new Font("Tahoma",Font.BOLD,14));
+        }
+    private void ItemTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ItemTableMouseClicked
+        DefaultTableModel Model=(DefaultTableModel) ItemTable.getModel();
+        int Myindex = ItemTable.getSelectedRow();
+        ItemName.setText(Model.getValueAt(Myindex,1).toString());
+        ItemCode.setText(Model.getValueAt(Myindex,0).toString());
+        ItemPrice.setText(Model.getValueAt(Myindex,3).toString());
+        AvailableQuantity.setText(Model.getValueAt(Myindex,4).toString());
+        ItemCat=Model.getValueAt(Myindex,2).toString();
+        ItemDesc=Model.getValueAt(Myindex,5).toString();
+        getRec();
+    }//GEN-LAST:event_ItemTableMouseClicked
+
+    private void ItemNameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ItemNameFocusGained
+        
+    }//GEN-LAST:event_ItemNameFocusGained
+
+    private void ItemNameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ItemNameFocusLost
+        
+    }//GEN-LAST:event_ItemNameFocusLost
+
+    private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
+         if(ItemName.getText().isEmpty()||ItemQuantity.getValue().toString().isEmpty()||ItemCode.getText().isEmpty()||ItemPrice.getText().isEmpty()||AvailableQuantity.getText().isEmpty())
+      {
+           JOptionPane.showMessageDialog(this, "Missing Information");
+      }
+      else{
+        try {
+            Con = DriverManager.getConnection("jdbc:derby://localhost:1527/grocerystoredb","User1","1234");
+            PreparedStatement add = Con.prepareStatement("insert into CUSTOMER values (?,?,?,?,?,?)");
+            add.setString(1,ItemCode.getText());// TODO add your handling code here:
+            add.setString(2,ItemName.getText());
+            add.setString(3,ItemCat);
+            add.setString(4,ItemPrice.getText());
+            add.setString(5,ItemQuantity.getValue().toString());
+            add.setString(6,ItemDesc);
+            int row;
+            row = add.executeUpdate();
+            Con.close();
+            Update();
+            SelectItem(); 
+            SelectedItem();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        try{
+            Con=DriverManager.getConnection("jdbc:derby://localhost:1527/grocerystoredb","User1","1234");
+            St=Con.createStatement();
+            String query="Select * from User1.MANAGEITEMTTB where ITEM_CODE='"+Recommendation+"'";
+            Rs=St.executeQuery(query);
+            if(Rs.next()){
+                int answer=JOptionPane.showConfirmDialog(this,"Do you also want to add "+Rs.getString("ITEM_NAME"),"Recommendation",JOptionPane.YES_NO_CANCEL_OPTION);
+                if(answer==0){
+                    ItemCode.setText(Rs.getString("ITEM_CODE"));
+                    ItemCode.requestFocus();
+                    ItemName.setText("");
+                    ItemPrice.setText("");
+                    AvailableQuantity.setText("");
+                    ItemQuantity.setValue(0);
+                }
+            }
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    }//GEN-LAST:event_AddActionPerformed
+
+    private void ClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearActionPerformed
+        ItemName.setText("");
+        ItemCode.setText("");
+        ItemPrice.setText("");
+        AvailableQuantity.setText("");
+        ItemQuantity.setValue(0);
+    }//GEN-LAST:event_ClearActionPerformed
+
+    private void ItemCategoryFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ItemCategoryFocusGained
+
+    }//GEN-LAST:event_ItemCategoryFocusGained
+
+    private void ItemCategoryFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ItemCategoryFocusLost
+
+    }//GEN-LAST:event_ItemCategoryFocusLost
+
+    private void ItemCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemCategoryActionPerformed
+       FilterItems();   
+    }//GEN-LAST:event_ItemCategoryActionPerformed
+
+    private void ItemSearchFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ItemSearchFocusGained
+       
+    }//GEN-LAST:event_ItemSearchFocusGained
+
+    private void ItemSearchFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ItemSearchFocusLost
+       
+    }//GEN-LAST:event_ItemSearchFocusLost
+
+    private void ItemSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ItemSearchActionPerformed
+
+    private void ItemSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemSearchKeyReleased
+        DefaultTableModel Model=(DefaultTableModel) ItemTable.getModel();
+        String search = ItemSearch.getText();
+        TableRowSorter<DefaultTableModel> tr= new TableRowSorter <DefaultTableModel>(Model);
+        ItemTable.setRowSorter(tr);
+        tr.setRowFilter(RowFilter.regexFilter(search));
+    }//GEN-LAST:event_ItemSearchKeyReleased
+
+    private void ItemCategoryItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ItemCategoryItemStateChanged
+
+    }//GEN-LAST:event_ItemCategoryItemStateChanged
+
+    private void ItemCategoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ItemCategoryMouseClicked
+      
+    }//GEN-LAST:event_ItemCategoryMouseClicked
+
+    private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
+        Login lgn=new Login();
+        lgn.setExtendedState(Login.MAXIMIZED_BOTH);
+        lgn.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_backActionPerformed
+
+    private void backMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backMouseClicked
+ 
+    }//GEN-LAST:event_backMouseClicked
+
+    private void SelectedItemsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SelectedItemsMouseClicked
+        DefaultTableModel Model=(DefaultTableModel) SelectedItems.getModel();
+        int Myindex = SelectedItems.getSelectedRow();
+        codefordelete=Model.getValueAt(Myindex,0).toString();
+        quantityfordelete=Model.getValueAt(Myindex,4).toString();
+    }//GEN-LAST:event_SelectedItemsMouseClicked
+
+    private void ItemCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemCodeActionPerformed
+        String ItemId=ItemCode.getText();
+        try{
+            Con=DriverManager.getConnection("jdbc:derby://localhost:1527/grocerystoredb","User1","1234");
+            St=Con.createStatement();
+            String query="Select * from User1.MANAGEITEMTTB where ITEM_CODE='"+ItemId+"'";
+            Rs=St.executeQuery(query);
+            if(Rs.next()){
+                ItemName.setText(Rs.getString(2));
+                ItemPrice.setText(String.valueOf(Rs.getInt(4)));
+                AvailableQuantity.setText(String.valueOf(Rs.getInt(5)));
+            }
+            else{
+                ItemName.setText("");
+                ItemPrice.setText("");
+                AvailableQuantity.setText("");
+                ItemQuantity.setValue(0);
+            }
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        getRec();
+    }//GEN-LAST:event_ItemCodeActionPerformed
+
+    private void ItemCodeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ItemCodeKeyReleased
+        String ItemId=ItemCode.getText();
+        try{
+            Con=DriverManager.getConnection("jdbc:derby://localhost:1527/grocerystoredb","User1","1234");
+            St=Con.createStatement();
+            String query="Select * from User1.MANAGEITEMTTB where ITEM_CODE='"+ItemId+"'";
+            Rs=St.executeQuery(query);
+            if(Rs.next()){
+                ItemName.setText(Rs.getString(2));
+                ItemPrice.setText(String.valueOf(Rs.getInt(4)));
+                AvailableQuantity.setText(String.valueOf(Rs.getInt(5)));
+            }
+            else{
+                ItemName.setText("");
+                ItemPrice.setText("");
+                AvailableQuantity.setText("");
+                ItemQuantity.setValue(0);
+            }
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        getRec();
+    }//GEN-LAST:event_ItemCodeKeyReleased
+
+    private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
+        try{
+            Con = DriverManager.getConnection("jdbc:derby://localhost:1527/grocerystoredb","User1","1234");
+            String Query="Delete from User1.CUSTOMER where ITEM_CODE='"+codefordelete+"' and ITEM_QUANTITY='"+quantityfordelete+"'";
+            Statement Add=Con.createStatement();
+            Add.executeUpdate(Query);
+            SelectedItem();
+            JOptionPane.showMessageDialog(this, "Item Deleted");
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_DeleteActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Billing_pointt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Billing_pointt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Billing_pointt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Billing_pointt.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                Customer c=new Customer();
+                c.setVisible(true);
+                c.setExtendedState(Customer.MAXIMIZED_BOTH);
+                
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Add;
+    private javax.swing.JTextField AvailableQuantity;
+    private javax.swing.JButton Clear;
+    private javax.swing.JButton Delete;
+    private javax.swing.JComboBox<String> ItemCategory;
+    private javax.swing.JTextField ItemCode;
+    private javax.swing.JTextField ItemName;
+    private javax.swing.JTextField ItemPrice;
+    private javax.swing.JSpinner ItemQuantity;
+    private javax.swing.JTextField ItemSearch;
+    private javax.swing.JTable ItemTable;
+    private javax.swing.JTable SelectedItems;
+    private javax.swing.JButton back;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    // End of variables declaration//GEN-END:variables
+}
